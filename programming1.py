@@ -61,12 +61,12 @@ def main():
     
     
     if not os.path.isfile(word_list_file):
-        print("The word list file you have entered was not found.\n"
+        print("Usage: python programming.py [wordlist.txt] [scrammbled_word_list.txt]\nThe word list file you have entered was not found.\n"
               "Check spelling and or make sure the file is in the same directory as the script")
         sys.exit(1)
     
     if not os.path.isfile(scrammbled_word_list_file):
-        print("The scrammbled word list file you have entered was not found.]\n"
+        print("Usage: python programming.py [wordlist.txt] [scrammbled_word_list.txt]\nThe scrammbled word list file you have entered was not found.]\n"
               "Check spelling and or make sure the file is in the same directory as the script")
         sys.exit(1)    
     
