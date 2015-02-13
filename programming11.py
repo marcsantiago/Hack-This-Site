@@ -79,7 +79,7 @@ def send_answer(data_to_send):
 
 
 
-html_page = login("pythonpentester115", "Navicula1234567")
+html_page = login(XXXXXXXXXX, XXXXXXXXXX)
 key = find_key(html_page)
 encrytped_string = find_encrypted_string(html_page)
 send_answer(encrytped_string)
