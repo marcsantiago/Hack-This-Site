@@ -74,15 +74,17 @@ def send_answer(data_to_send):
     encoded_data = urllib.urlencode(form_data)
     referer = "https://www.hackthissite.org/missions/prog/11/index.php"
     req = urllib2.Request(referer, encoded_data, values)
-    return req
+    page = urllib2.urlopen(req)
+    return page
 
 
 
 
-html_page = login(XXXXXXXXXX, XXXXXXXXXX)
+html_page = login("tyrthor115", "Navicula1234567")
 key = find_key(html_page)
 encrytped_string = find_encrypted_string(html_page)
-send_answer(encrytped_string)
+data = getCypheredText(encrytped_string, key)
+send_answer(data)
 
 
 """You can check your profile now to see that programming mission 11 was completed!"""
