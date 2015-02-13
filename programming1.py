@@ -57,7 +57,7 @@ def main():
     import os
     
     word_list_file = sys.argv[1]
-    scrammbled_word_list_file = sys.argv[1]
+    scrammbled_word_list_file = sys.argv[2]
     
     
     if not os.path.isfile(word_list_file):
