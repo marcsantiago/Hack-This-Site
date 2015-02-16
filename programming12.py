@@ -74,4 +74,4 @@ data_string = page_contents[start_of_string+38:end_of_string-17]
 data = generate_answer_from_raw_string(data_string)
 
 # send data
-hts.send_answer(data, url)
+hts.send_answer(data, url) #see the HackThisSite.py file for special note about sending data on this mission
