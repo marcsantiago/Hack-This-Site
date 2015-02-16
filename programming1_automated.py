@@ -79,4 +79,5 @@ for word in sorted_scrammbled_list:
 data = string[:-1]
 
 #send data to hts
+os.remove("wordlist.txt") # remove the wordlist since it is no longer needed
 hts.send_answer(data, url)
