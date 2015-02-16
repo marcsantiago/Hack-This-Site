@@ -60,7 +60,7 @@ class HackThisSite:
     
     # Submit hts form data
     def send_answer(self, data_to_send, page_to_send_data_to):
-        self.form_data = {'solution' : data_to_send}
+        self.form_data = {'solution' : data_to_send} # for mission 12 you will need to change the code to form_data = {'solution' : data_to_send, "submitbutton" : "Submit"}
         self.encoded_data = urllib.urlencode(self.form_data)
         self.referer = page_to_send_data_to
         self.req = urllib2.Request(self.referer, self.encoded_data, self.values)
