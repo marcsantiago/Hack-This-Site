@@ -81,7 +81,7 @@ def send_answer(data_to_send):
     return page
 
 
-html_page = login("tyrthor115", "Navicula1234567")
+html_page = login("XXXXXXXXX", "XXXXXXXXX")
 key = find_key(html_page)
 encrytped_string = find_encrypted_string(html_page)
 data = get_cyphered_text(encrytped_string, key)
