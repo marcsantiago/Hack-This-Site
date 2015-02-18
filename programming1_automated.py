@@ -37,7 +37,7 @@ def read_wordlist(word_list):
 
 
 #Log in and open html page for reading 
-hts = HackThisSite("tyrthor115", "Navicula1234567")
+hts = HackThisSite("XXXXXXXXXX", "XXXXXXXXX")
 url = "https://www.hackthissite.org/missions/prog/1/index.php"
 html_page = hts.login_and_read_page_we_want(url)
 
