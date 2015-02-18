@@ -23,8 +23,8 @@ translater = {'A': '.-',     'B': '-...',   'C': '-.-.',
 
 
 #Log in and open html page for reading 
-username = "pythonpentester115"
-password = "Navicula1234567"
+username = "XXXXXXXX"
+password = "XXXXXXXX"
 hts = HackThisSite(username, password)
 url = "https://www.hackthissite.org/missions/prog/2/index.php"
 html_page = hts.login_and_read_page_we_want(url)
