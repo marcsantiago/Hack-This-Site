@@ -1,4 +1,6 @@
-import urllib, urllib2, cookielib
+import urllib
+import urllib2
+import cookielib
 
 values = {'Host': 'www.hackthissite.org',
           'User-Agent':'Mozilla/4.0 (compatible; MSIE 8.0)',
@@ -6,6 +8,7 @@ values = {'Host': 'www.hackthissite.org',
           'Content-Type':'application/x-www-form-urlencoded',
           'Accept-Encoding':'gzip,deflate',
           }
+
 
 def login(username, password):
     host = 'www.hackthissite.org'
@@ -36,7 +39,6 @@ def login(username, password):
     return str(page.read())
 
 
-
 def find_key(page):
     html_content = page
     key = html_content.find("Shift:")
@@ -57,7 +59,6 @@ def tsplit(s, sep):
 
 def find_encrypted_string(page):
     html_content = page
-    split_string = []
     start_of_string = html_content.find("String:")
     end_of_string = html_content.find("Shift:")
     encrypted_string = html_content[start_of_string+8:end_of_string-12]
@@ -65,12 +66,14 @@ def find_encrypted_string(page):
     encrypted_string = filter(None, encrypted_string)
     return encrypted_string
 
-def getCypheredText(inputWord,shift):
-    shiftedInputWordList=[chr(int(x)-int(shift)) for x in inputWord]
-    return ''.join(shiftedInputWordList)
+
+def get_cyphered_text(input_word, shift):
+    shifted_input_wordlist = [chr(int(x) - int(shift)) for x in input_word]
+    return ''.join(shifted_input_wordlist)
+
 
 def send_answer(data_to_send):
-    form_data = form_data = {'solution' : data_to_send}
+    form_data = form_data = {'solution': data_to_send}
     encoded_data = urllib.urlencode(form_data)
     referer = "https://www.hackthissite.org/missions/prog/11/index.php"
     req = urllib2.Request(referer, encoded_data, values)
@@ -78,13 +81,10 @@ def send_answer(data_to_send):
     return page
 
 
-
-
 html_page = login("tyrthor115", "Navicula1234567")
 key = find_key(html_page)
 encrytped_string = find_encrypted_string(html_page)
-data = getCypheredText(encrytped_string, key)
+data = get_cyphered_text(encrytped_string, key)
 send_answer(data)
-
-
+print send_answer(data)
 """You can check your profile now to see that programming mission 11 was completed!"""
