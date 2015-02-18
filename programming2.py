@@ -23,8 +23,8 @@ translater = {'A': '.-',     'B': '-...',   'C': '-.-.',
 
 
 #Log in and open html page for reading 
-username = "XXXXXXXX"
-password = "XXXXXXXX"
+username = "pythonpentester115"
+password = "Navicula1234567"
 hts = HackThisSite(username, password)
 url = "https://www.hackthissite.org/missions/prog/2/index.php"
 html_page = hts.login_and_read_page_we_want(url)
@@ -40,9 +40,7 @@ with open("PNG.png", 'w') as wordlist:
 
 #Open Image and find data
 hts_image = Image.open("PNG.png")
-pix = hts_image.getdata() #where 0 is black and 1 is white pixel
-
-
+pix = hts_image.getdata()  #where 0 is black and 1 is white pixel
 
 temp = 0
 current_pix = 0
@@ -53,7 +51,10 @@ for pixel in list(pix):
         main_list.append(current_pix - temp)
         temp = current_pix
 
-main_list[0] = main_list[0] - 1 #this is to make sure that we fix the offset we created with the first pixel by starting the count at 1
+#this is to make sure that we fix the offset
+#we created with the first pixel by starting the count at 1
+main_list[0] = main_list[0] - 1
+
 main_list = [chr(i) for i in main_list]
 morse_code_string = "".join(main_list)
 morse_code_string = morse_code_string.replace("/", "")
@@ -61,7 +62,6 @@ print morse_code_string
 
 morse_code_list = morse_code_string.split(" ")
 morse_code_list = filter(None, morse_code_list)
-
 
 eng_list = []
 for code in morse_code_list:
