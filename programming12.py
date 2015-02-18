@@ -1,6 +1,7 @@
 from HackThisSite import *
 import math
 
+
 def is_prime(n):
     if n == 2:
         return True
@@ -12,6 +13,7 @@ def is_prime(n):
             return False
     return True
 
+
 def comp_prime_product(number_list):
     prime_numbers = []
     composite_numbers =[]
@@ -19,12 +21,14 @@ def comp_prime_product(number_list):
         if is_prime(int(num)):
             prime_numbers.append(int(num))
         else:
-            composite_numbers.append(int(num))
+            if(int(num) != 0 and int(num) != 1):
+                composite_numbers.append(int(num))
             
-    composite_numbers = [i for i in composite_numbers if i != 1]
-    composite_numbers = [i for i in composite_numbers if i != 0]
+    #composite_numbers = [i for i in composite_numbers if i != 1]
+    #composite_numbers = [i for i in composite_numbers if i != 0]
 
     return sum(prime_numbers) * sum(composite_numbers)
+
 
 def trunc_and_shift(char_list):
     char_list = char_list[:25]
@@ -37,7 +41,7 @@ def trunc_and_shift(char_list):
 
 
 def generate_answer_from_raw_string(string):
-    '''Returns the answer to the problem'''
+    """Returns the answer to the problem"""
     numbers = []
     letter = []
     for ch in string:
@@ -47,13 +51,10 @@ def generate_answer_from_raw_string(string):
             letter.append(ch)
     return trunc_and_shift(letter) + str(comp_prime_product(numbers))
         
-        
-    
-
 
 # create local variables to hold user name, password, and url of the page we are working with
-username = "XXXXXXXXXXXXXXX"
-password = "XXXXXXXXXXXXXXX"
+username = "XXXXXXXXX"
+password = "XXXXXXXXX"
 
 #create an instance of the class
 # pass login information to HackThisSite constructor
@@ -74,4 +75,5 @@ data_string = page_contents[start_of_string+38:end_of_string-17]
 data = generate_answer_from_raw_string(data_string)
 
 # send data
-hts.send_answer(data, url) #see the HackThisSite.py file for special note about sending data on this mission
+hts.send_answer(data, url)
+print hts.send_answer(data, url)
