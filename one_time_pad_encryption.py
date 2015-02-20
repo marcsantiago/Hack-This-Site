@@ -9,6 +9,9 @@ class OneTimePadEncryption:
     def __init__(self):
         self.my_key = None
         self.my_string = None
+        self.string_list = None
+        self.key_list = None
+        self.file_data = None
 
     alpha_dictionary = {
         0: ["a"],
@@ -118,17 +121,25 @@ class OneTimePadEncryption:
             message.write(decrypted_string)
         return decrypted_string
 
-    def encrypt_string(self, standard_string):
+    def encrypt_string(self, plain_text, string_file_mode=False):
         """Method that takes either the key or the plaintext as a
         string or can the key and plaintext a as file and encrypts it
         using the randomly generated key"""
-        string_list = self.string_converter(standard_string)
-        key_list = self.key_generator(standard_string)
+
+        if string_file_mode is True:
+            with open(plain_text) as plaintext_data:
+                self.file_data = str(plaintext_data.read())
+                self.string_list = self.file_data
+        else:
+            self.string_list = plain_text
+
+        self.string_list = self.string_converter(self.file_data)
+        self.key_list = self.key_generator(self.file_data)
 
         combined_list_values = []
 
-        for j in xrange(len(standard_string)):
-            combined_list_values.append(string_list[j] + key_list[j])
+        for j in xrange(len(self.string_list)):
+            combined_list_values.append(self.string_list[j] + self.key_list[j])
 
         encrypted_list = [k % 29 for k in combined_list_values]
 
@@ -140,9 +151,11 @@ class OneTimePadEncryption:
         encrypted_string = "".join(message).replace("[", "").replace("]", "").replace("'", "")
         with open("encrypted_message.txt", 'w') as message:
             message.write(encrypted_string)
+
         return encrypted_string
 
 #Example of use
 ope = OneTimePadEncryption()
-print ope.encrypt_string("This is a test.")
+#print ope.encrypt_string("this is a test")
+print ope.encrypt_string("pad_plaintext.txt", string_file_mode=True)
 print ope.decrypt_string("key.dat", "encrypted_message.txt", key_file_mode=True, encrypted_string_file_mode=True)
