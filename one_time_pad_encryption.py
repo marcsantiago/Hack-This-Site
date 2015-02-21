@@ -5,7 +5,8 @@ class OneTimePadEncryption:
     """This Class was designed to apply a one time pad encryption
     on textual data that either comes from a file or that is entered
     manually by the user. NOTE** the program can only handle the
-    standard english alphabet, spaces, periods, and commas."""
+    standard english alphabet, with  spaces, other punctuation
+    has not been added yet"""
     def __init__(self):
         self.my_key = None
         self.my_string = None
@@ -41,9 +42,6 @@ class OneTimePadEncryption:
         24: ["y"],
         25: ["z"],
         26: [" "],
-        27: ["."],
-        28: [","]
-
     }
 
     def string_converter(self, e_d_string_or_key_string):
@@ -68,7 +66,7 @@ class OneTimePadEncryption:
         a list if ascii values"""
         string_length = len(standard_string_length)
         key_list = []
-        key_values = [32, 44, 46, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,112,
+        key_values = [32, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,112,
                       113, 114, 115, 116, 117, 118, 119, 120, 121, 122]
 
         for i in xrange(string_length):
@@ -109,7 +107,7 @@ class OneTimePadEncryption:
         for j in xrange(len(my_string_num_list)):
             combined_list_values.append(my_string_num_list[j] - my_key_num_list[j])
 
-        decrypted_list = [k % 29 for k in combined_list_values]
+        decrypted_list = [k % 27 for k in combined_list_values]
 
         message = []
         for num in decrypted_list:
@@ -141,7 +139,7 @@ class OneTimePadEncryption:
         for j in xrange(len(self.string_list)):
             combined_list_values.append(self.string_list[j] + self.key_list[j])
 
-        encrypted_list = [k % 29 for k in combined_list_values]
+        encrypted_list = [k % 27 for k in combined_list_values]
 
         message = []
         for num in encrypted_list:
@@ -155,6 +153,7 @@ class OneTimePadEncryption:
         return encrypted_string
 
 #Example of use
+
 ope = OneTimePadEncryption()
 #print ope.encrypt_string("this is a test")
 print ope.encrypt_string("pad_plaintext.txt", string_file_mode=True)
