@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.7
 from PIL import Image 
 from HackThisSite import *
 import urllib2
