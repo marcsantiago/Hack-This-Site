@@ -1,5 +1,7 @@
 from random import choice
-
+import pyminizip
+import os
+import zipfile
 
 class OneTimePadEncryption:
     """This Class was designed to apply a one time pad encryption
@@ -78,15 +80,23 @@ class OneTimePadEncryption:
             data.write(temp_string)
         return self.string_converter("".join(key_list))
 
-    """Under Construction"""
-    def encrypt_file(self):
-        pass
+    def encrypt_file(self, zip_password):
+        """Encrypts the key.dat file with a zip encryption using pyminizip.
+        For more instructions regarding pyminizip you visit pypi.python.org
+        and search for the module."""
+        pyminizip.compress("key.dat", "key.zip", zip_password, int(9))
+        os.remove("key.dat")
+
+    def decrypt_file(self, zip_password):
+        """Unzips key.zip file using a supplied password"""
+        zipfile.ZipFile("key.zip").extractall(pwd=zip_password)
 
     def decrypt_string(self, key, encrypted_string, key_file_mode=False, encrypted_string_file_mode=False):
         """Method that takes either the key or the encrypted string as a
         string or can the key and encrypted string a as file and decrypts
         the string using the provided string. NOTE** The key provided must
-        be the same key used to encrypt the string"""
+        be the same key used to encrypt the string, in order to use the the key.dat file
+        you must first also be able to unzip it using a password."""
         if key_file_mode is True:
             self.my_key = key
             with open(self.my_key, 'r') as key_data:
@@ -150,11 +160,13 @@ class OneTimePadEncryption:
         with open("encrypted_message.txt", 'w') as message:
             message.write(encrypted_string)
 
+        self.encrypt_file(raw_input("Please type in a password to zip and encrypt the key.dat file\n"))
+
         return encrypted_string
 
 #Example of use
-
 ope = OneTimePadEncryption()
 #print ope.encrypt_string("this is a test")
 print ope.encrypt_string("pad_plaintext.txt", string_file_mode=True)
+ope.decrypt_file("password")
 print ope.decrypt_string("key.dat", "encrypted_message.txt", key_file_mode=True, encrypted_string_file_mode=True)
