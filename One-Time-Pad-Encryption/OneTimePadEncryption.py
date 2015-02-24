@@ -3,21 +3,26 @@ from random import choice
 import pyminizip
 import os
 import zipfile
+import datetime
 
 
 class OneTimePadEncryption:
     """This Class was designed to apply a one time pad encryption
     on textual data that either comes from a file or that is entered
     manually by the user. NOTE** the program can only handle the
-    standard english alphabet and basic punctuation"""
+    standard english alphabet and basic punctuation.  Note, they suffix
+    of the key file and the suffix of the encrypted message file will be the
+    same.  This allows users to associate key files with their corresponding
+    encrypted text files"""
     def __init__(self):
         self.my_key = None
         self.my_string = None
         self.string_list = None
         self.key_list = None
         self.file_data = None
+        self.timestamp = None
 
-    alpha_dictionary = {
+    __alpha_dictionary = {
         0: ["a"],
         1: ["b"],
         2: ["c"],
@@ -62,7 +67,7 @@ class OneTimePadEncryption:
         plaintext = str(e_d_string_or_key_string).lower()
         string_list = []
         for ch in plaintext:
-            for k, v in self.alpha_dictionary.items():
+            for k, v in self.__alpha_dictionary.items():
                 if ch in v:
                     string_list.append(k)
                 else:
@@ -75,6 +80,7 @@ class OneTimePadEncryption:
         the length of the provided string.  The list is based on on the
         key_values variable below, which is
         a list if ascii values"""
+        filename = "_".join(["key", self.timestamp])
         string_length = len(standard_string_length)
         key_list = []
         key_values = [32, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
@@ -82,7 +88,7 @@ class OneTimePadEncryption:
 
         for i in xrange(string_length):
             key_list.append(chr(choice(key_values)))
-        with open("key.dat", 'w') as data:
+        with open(filename + ".dat", 'w') as data:
             temp_string = ""
             for key in key_list:
                 temp_string += key
@@ -93,8 +99,9 @@ class OneTimePadEncryption:
         """Encrypts the key.dat file with a zip encryption using pyminizip.
         For more instructions regarding pyminizip you visit pypi.python.org
         and search for the module."""
-        pyminizip.compress("key.dat", "key.zip", zip_password, int(9))  #add a pwd checker ensure pwd is strong enough
-        os.remove("key.dat")
+        filename = "_".join(["key", self.timestamp])
+        pyminizip.compress(filename + ".dat", filename + ".zip", zip_password, int(9))
+        os.remove(filename + ".dat")
 
     def decrypt_file(self, zip_password):
         """Unzips key.zip file using a supplied password"""
@@ -130,7 +137,7 @@ class OneTimePadEncryption:
 
         message = []
         for num in decrypted_list:
-            for k, v in self.alpha_dictionary.items():
+            for k, v in self.__alpha_dictionary.items():
                 if k == num:
                     message.append(str(v))
         decrypted_string = "".join(message).replace("[", "").replace("]", "").replace("'", "")
@@ -142,12 +149,14 @@ class OneTimePadEncryption:
         """Method that takes either the key or the plaintext as a
         string or can the key and plaintext a as file and encrypts it
         using the randomly generated key"""
+        self.timestamp = str(datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
+        filename = "_".join(["encrypted_message", self.timestamp])
 
         if string_file_mode is True:
             with open(plain_text) as plaintext_data:
                 self.file_data = str(plaintext_data.read())
-                self.string_list = self.string_converter(self.file_data)
-                self.key_list = self.key_generator(self.file_data)
+                self.string_list = self.__string_converter(self.file_data)
+                self.key_list = self.__key_generator(self.file_data)
         else:
             self.string_list = self.__string_converter(plain_text)
             self.key_list = self.__key_generator(plain_text)
@@ -161,11 +170,11 @@ class OneTimePadEncryption:
 
         message = []
         for num in encrypted_list:
-            for k, v in self.alpha_dictionary.items():
+            for k, v in self.__alpha_dictionary.items():
                 if k == num:
                     message.append(str(v))
         encrypted_string = "".join(message).replace("[", "").replace("]", "").replace("'", "")
-        with open("encrypted_message.txt", 'w') as message:
+        with open(filename + ".txt", 'w') as message:
             message.write(encrypted_string)
 
         self.__encrypt_file(raw_input("Please type in a password to zip and encrypt the key.dat file\n"))
