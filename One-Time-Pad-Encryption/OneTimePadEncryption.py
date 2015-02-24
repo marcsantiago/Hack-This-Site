@@ -60,7 +60,7 @@ class OneTimePadEncryption:
     }
 
     def __string_converter(self, e_d_string_or_key_string):
-        """Takes a given string whether it is the encrypted string,
+        """Takes a given string or file, whether it is the encrypted string,
          plaintext(or decrypted string), or the generated key string and
          and translates it based on the provided alpha dictionary.
          NOTE** all strings are converted to lowercase."""
@@ -110,8 +110,7 @@ class OneTimePadEncryption:
     def decrypt_string_or_file(self, key, encrypted_string, key_file_mode=False, encrypted_string_file_mode=False):
         """Method that takes either the key or the encrypted string as a
         string or can the key and encrypted string a as file and decrypts
-        the string using the provided string. NOTE** The key provided must
-        be the same key used to encrypt the string, in order to use the the key.dat file
+        the string using the provided string. NOTE** In order to use the the key.dat file
         you must first also be able to unzip it using a password."""
         if key_file_mode is True:
             self.my_key = key
@@ -146,9 +145,8 @@ class OneTimePadEncryption:
         return decrypted_string
 
     def encrypt_string_or_file(self, plain_text, string_file_mode=False):
-        """Method that takes either the key or the plaintext as a
-        string or can the key and plaintext a as file and encrypts it
-        using the randomly generated key"""
+        """Method that takes either the key or plaintext as a
+        string or file. The key is randomly generated for you!"""
         self.timestamp = str(datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
         filename = "_".join(["encrypted_message", self.timestamp])
 
