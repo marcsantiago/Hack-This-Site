@@ -54,7 +54,7 @@ class OneTimePadEncryption:
 
     }
 
-    def string_converter(self, e_d_string_or_key_string):
+    def __string_converter(self, e_d_string_or_key_string):
         """Takes a given string whether it is the encrypted string,
          plaintext(or decrypted string), or the generated key string and
          and translates it based on the provided alpha dictionary.
@@ -70,7 +70,7 @@ class OneTimePadEncryption:
 
         return string_list
 
-    def key_generator(self, standard_string_length):
+    def __key_generator(self, standard_string_length):
         """Generates a random list of letters that is equal to
         the length of the provided string.  The list is based on on the
         key_values variable below, which is
@@ -87,9 +87,9 @@ class OneTimePadEncryption:
             for key in key_list:
                 temp_string += key
             data.write(temp_string)
-        return self.string_converter("".join(key_list))
+        return self.__string_converter("".join(key_list))
 
-    def encrypt_file(self, zip_password):
+    def __encrypt_file(self, zip_password):
         """Encrypts the key.dat file with a zip encryption using pyminizip.
         For more instructions regarding pyminizip you visit pypi.python.org
         and search for the module."""
@@ -119,8 +119,8 @@ class OneTimePadEncryption:
         else:
             self.my_string = encrypted_string
 
-        my_string_num_list = self.string_converter(self.my_string)
-        my_key_num_list = self.string_converter(self.my_key)
+        my_string_num_list = self.__string_converter(self.my_string)
+        my_key_num_list = self.__string_converter(self.my_key)
 
         combined_list_values = []
         for j in xrange(len(my_string_num_list)):
@@ -149,8 +149,8 @@ class OneTimePadEncryption:
                 self.string_list = self.string_converter(self.file_data)
                 self.key_list = self.key_generator(self.file_data)
         else:
-            self.string_list = self.string_converter(plain_text)
-            self.key_list = self.key_generator(plain_text)
+            self.string_list = self.__string_converter(plain_text)
+            self.key_list = self.__key_generator(plain_text)
 
         combined_list_values = []
 
@@ -168,6 +168,6 @@ class OneTimePadEncryption:
         with open("encrypted_message.txt", 'w') as message:
             message.write(encrypted_string)
 
-        self.encrypt_file(raw_input("Please type in a password to zip and encrypt the key.dat file\n"))
+        self.__encrypt_file(raw_input("Please type in a password to zip and encrypt the key.dat file\n"))
 
         return encrypted_string
