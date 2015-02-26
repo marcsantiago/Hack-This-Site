@@ -1,16 +1,18 @@
 #!/usr/bin/env python2.7
 from random import choice
-import pyminizip
-import os
-import zipfile
-import datetime
+from sys import exit
+from pyminizip import compress
+from os import remove
+from zipfile import ZipFile
+from datetime import datetime
+
 
 
 class OneTimePadEncryption:
     """This Class was designed to apply a one time pad encryption
     on textual data that either comes from a file or that is entered
     manually by the user. NOTE** the program can only handle the
-    standard english alphabet and basic punctuation.  Note, they suffix
+    standard english alphabet and basic punctuation.  Note, the suffix
     of the key file and the suffix of the encrypted message file will be the
     same.  This allows users to associate key files with their corresponding
     encrypted text files"""
@@ -94,18 +96,58 @@ class OneTimePadEncryption:
                 temp_string += key
             data.write(temp_string)
         return self.__string_converter("".join(key_list))
-
+    
+    def __password_checker(self, zip_password):
+        """checks the password the user entered to zip secure the key.dat file.
+        Warns the user if the password is too weak and prompts the user if they
+        wish to continue if the password is too weak."""
+        answer = ""
+        cap = 0
+        special = 0
+        num = 0
+        if len(zip_password) < 8:
+            print "Warning! The password you have entered is less then 8 character."
+            answer = raw_input("do you wish to continue? [y] or [n]\n").lower()
+            if answer not in ['y', 'yes']:
+                print "Exiting Program..."
+                exit(0)
+        for ch in zip_password:
+            if ch.isdigit():
+                num += 1
+            elif ch.isupper():
+                cap += 1
+            elif ch in "!@#$%^&*":
+                special += 1
+        if num == 0 or cap == 0 or special == 0:
+            print "The password you have entered is weak."
+            print "A strong password should contain at least one number, one uppercase,\
+            and one special character."
+            print "Your password contains %d numbers, %d uppercase letters, and %d special charcters" \
+                  %(num, cap, special)
+            answer = raw_input("do you wish to continue? [y] or [n]\n").lower()
+            if answer not in ['y', 'yes']:
+                print "Exiting Program..."
+                exit(0)
+            else:
+                answer = raw_input("Do you wish to write your zip password to file? [y] or [n]\n").lower()
+                if answer in ['y', 'yes']:
+                    with open("zip_password.txt", 'w') as data:
+                        data.write(zip_password)
+                        return zip_password
+                else:
+                    return zip_password
+                    
     def __encrypt_file(self, zip_password):
         """Encrypts the key.dat file with a zip encryption using pyminizip.
         For more instructions regarding pyminizip you visit pypi.python.org
         and search for the module."""
         filename = "_".join(["key", self.timestamp])
-        pyminizip.compress(filename + ".dat", filename + ".zip", zip_password, int(9))
-        os.remove(filename + ".dat")
+        compress(filename + ".dat", filename + ".zip", zip_password, int(9))
+        remove(filename + ".dat")
 
     def decrypt_file(self, zip_password):
         """Unzips key.zip file using a supplied password"""
-        zipfile.ZipFile("key.zip").extractall(pwd=zip_password)
+        ZipFile("key.zip").extractall(pwd=zip_password)
 
     def decrypt_string_or_file(self, key, encrypted_string, key_file_mode=False, encrypted_string_file_mode=False):
         """Method that takes either the key or the encrypted string as a
@@ -147,7 +189,7 @@ class OneTimePadEncryption:
     def encrypt_string_or_file(self, plain_text, string_file_mode=False):
         """Method that takes either the key or plaintext as a
         string or file. The key is randomly generated for you!"""
-        self.timestamp = str(datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
+        self.timestamp = str(datetime.now().strftime("%y%m%d_%H%M%S"))
         filename = "_".join(["encrypted_message", self.timestamp])
 
         if string_file_mode is True:
@@ -175,6 +217,6 @@ class OneTimePadEncryption:
         with open(filename + ".txt", 'w') as message:
             message.write(encrypted_string)
 
-        self.__encrypt_file(raw_input("Please type in a password to zip and encrypt the key.dat file\n"))
+        self.__encrypt_file(self.__password_checker(raw_input("Please type in a password to zip and encrypt the key.dat file\n")))
 
         return encrypted_string
