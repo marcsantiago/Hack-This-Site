@@ -1,11 +1,11 @@
 #!/usr/bin/env python2.7
 from random import choice
 from sys import exit
+from sys import stdout
 from pyminizip import compress
 from os import remove
 from zipfile import ZipFile
 from datetime import datetime
-
 
 
 class OneTimePadEncryption:
@@ -101,7 +101,6 @@ class OneTimePadEncryption:
         """checks the password the user entered to zip secure the key.dat file.
         Warns the user if the password is too weak and prompts the user if they
         wish to continue if the password is too weak."""
-        answer = ""
         cap = 0
         special = 0
         num = 0
@@ -120,10 +119,9 @@ class OneTimePadEncryption:
                 special += 1
         if num == 0 or cap == 0 or special == 0:
             print "The password you have entered is weak."
-            print "A strong password should contain at least one number, one uppercase,\
-            and one special character."
-            print "Your password contains %d numbers, %d uppercase letters, and %d special charcters" \
-                  %(num, cap, special)
+            print "A strong password should contain at least one number, one uppercase, and one special character."
+            print "Your password contains %d numbers, %d uppercase letters, and %d special characters"\
+                  % (num, cap, special)
             answer = raw_input("do you wish to continue? [y] or [n]\n").lower()
             if answer not in ['y', 'yes']:
                 print "Exiting Program..."
@@ -136,6 +134,8 @@ class OneTimePadEncryption:
                         return zip_password
                 else:
                     return zip_password
+        else:
+            return zip_password
                     
     def __encrypt_file(self, zip_password):
         """Encrypts the key.dat file with a zip encryption using pyminizip.
@@ -145,15 +145,16 @@ class OneTimePadEncryption:
         compress(filename + ".dat", filename + ".zip", zip_password, int(9))
         remove(filename + ".dat")
 
-    def decrypt_file(self, zip_password):
+    def decrypt_file(self, zip_file, zip_password):
         """Unzips key.zip file using a supplied password"""
-        ZipFile("key.zip").extractall(pwd=zip_password)
+        ZipFile(zip_file).extractall(pwd=zip_password)
 
     def decrypt_string_or_file(self, key, encrypted_string, key_file_mode=False, encrypted_string_file_mode=False):
         """Method that takes either the key or the encrypted string as a
         string or can the key and encrypted string a as file and decrypts
         the string using the provided string. NOTE** In order to use the the key.dat file
         you must first also be able to unzip it using a password."""
+        print "Starting Decryption..."
         if key_file_mode is True:
             self.my_key = key
             with open(self.my_key, 'r') as key_data:
@@ -171,27 +172,38 @@ class OneTimePadEncryption:
         my_key_num_list = self.__string_converter(self.my_key)
 
         combined_list_values = []
+
         for j in xrange(len(my_string_num_list)):
             combined_list_values.append(my_string_num_list[j] - my_key_num_list[j])
 
         decrypted_list = [k % 33 for k in combined_list_values]
 
         message = []
+        count = 1
+        bar_length = 20
         for num in decrypted_list:
+            percent = float(count) / len(decrypted_list)
+            hashes = "#" * int(round(percent * bar_length))
+            spaces = " " * (bar_length - len(hashes))
+            stdout.write("\rPercent: [{0}] {1}%".format(hashes + spaces, int(round(percent * 100))))
+            stdout.flush()
             for k, v in self.__alpha_dictionary.items():
                 if k == num:
                     message.append(str(v))
+            count += 1
+        print
         decrypted_string = "".join(message).replace("[", "").replace("]", "").replace("'", "")
         with open("decrypted_message.txt", 'w') as message:
             message.write(decrypted_string)
+        print "Decryption Complete."
         return decrypted_string
 
     def encrypt_string_or_file(self, plain_text, string_file_mode=False):
         """Method that takes either the key or plaintext as a
         string or file. The key is randomly generated for you!"""
+        print "Starting Encryption..."
         self.timestamp = str(datetime.now().strftime("%y%m%d_%H%M%S"))
         filename = "_".join(["encrypted_message", self.timestamp])
-
         if string_file_mode is True:
             with open(plain_text) as plaintext_data:
                 self.file_data = str(plaintext_data.read())
@@ -209,14 +221,24 @@ class OneTimePadEncryption:
         encrypted_list = [k % 33 for k in combined_list_values]
 
         message = []
+        count = 1
+        bar_length = 20
         for num in encrypted_list:
+            percent = float(count) / len(encrypted_list)
+            hashes = "#" * int(round(percent * bar_length))
+            spaces = " " * (bar_length - len(hashes))
+            stdout.write("\rPercent: [{0}] {1}%".format(hashes + spaces, int(round(percent * 100))))
+            stdout.flush()
             for k, v in self.__alpha_dictionary.items():
                 if k == num:
                     message.append(str(v))
+            count += 1
+        print
         encrypted_string = "".join(message).replace("[", "").replace("]", "").replace("'", "")
         with open(filename + ".txt", 'w') as message:
             message.write(encrypted_string)
 
-        self.__encrypt_file(self.__password_checker(raw_input("Please type in a password to zip and encrypt the key.dat file\n")))
-
+        self.__encrypt_file(self.__password_checker(raw_input("Please type in a password to zip "
+                                                              "and encrypt the key.dat file\n")))
+        print "Encryption Complete."
         return encrypted_string
